@@ -1,0 +1,64 @@
+// Importa e configura o 'dotenv' para ler o arquivo .env e disponibilizar as variáveis em 'process.env'
+import 'dotenv/config'; 
+
+/**
+ * Objeto 'shared': Centraliza as configurações comuns para evitar repetição de código
+ * entre os ambientes de desenvolvimento, teste e produção.
+ */
+const shared = {
+    // Define qual driver de banco de dados o Knex deve usar (neste caso, PostgreSQL)
+    client: 'pg', 
+
+    // Objeto que contém as credenciais de acesso ao servidor do banco de dados
+    connection: {
+        // Endereço do servidor (ex: localhost ou IP do servidor remoto)
+        host: process.env.DB_HOST,
+        
+        // Porta de conexão (converte para número e define 5432 como padrão caso esteja vazio)
+        port: Number(process.env.DB_PORT) || 5432, 
+        
+        // Nome do usuário cadastrado no banco de dados
+        user: process.env.DB_USER,
+        
+        // Senha do usuário para autenticação
+        password: process.env.DB_PASSWORD,
+        
+        // Nome do banco de dados (schema) que será utilizado
+        database: process.env.DB_NAME,
+    },
+
+    // Configurações sobre o versionamento da estrutura do banco (Migrations)
+    migrations: {
+        // Nome da tabela interna que o Knex criará para saber quais migrations já foram executadas
+        tableName: 'knex_migrations', 
+        
+        // Caminho no projeto onde os arquivos de criação/alteração de tabelas estão salvos
+        directory: './app/database/migration', 
+    },
+
+    // Configurações para o povoamento inicial de dados (Seeds)
+    seeds: {
+        // Caminho no projeto onde ficam os scripts para inserir dados de teste ou padrão
+        directory: './app/database/seed', 
+    },
+};
+
+/**
+ * Exportação das configurações por ambiente. 
+ * O Knex lerá este objeto para decidir qual conexão usar dependendo de onde o app está rodando.
+ */
+export default {
+    // Configuração para o ambiente de trabalho da pessoa desenvolvedora (local)
+    development: { ...shared }, 
+
+    // Configuração para o ambiente real (servidor online)
+    production: {
+        ...shared, // Herda todas as configurações do objeto 'shared'
+        
+        // Gerenciamento de conexões simultâneas para suportar muitos usuários
+        pool: { 
+            min: 2,  // Mantém no mínimo 2 conexões abertas (prontas para uso)
+            max: 20  // Permite abrir no máximo 20 conexões simultâneas para não sobrecarregar o banco
+        }, 
+    },
+};
