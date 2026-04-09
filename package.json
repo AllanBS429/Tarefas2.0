@@ -1,7 +1,8 @@
 {
-  "name": "blocksmagic",
+  "name": "allan",
   "version": "1.0.0",
   "description": "",
+  "keywords": [],
   "homepage": "https://github.com/LenizaOMD2009/blocksmagic#readme",
   "bugs": {
     "url": "https://github.com/LenizaOMD2009/blocksmagic/issues"
@@ -12,6 +13,7 @@
   },
   "license": "MIT",
   "author": "Allan Batista",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -19,6 +21,7 @@
   },
   "dependencies": {
     "dotenv": "^17.3.1",
+    "electron": "^41.2.0",
     "knex": "^3.2.5",
     "pg": "^8.20.0"
   },
